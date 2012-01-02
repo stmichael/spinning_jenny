@@ -18,18 +18,16 @@ describe SpinningJenny::DataBuilder do
   end
 
   describe "#build" do
-    it "creates an object of type described by the blueprint" do
-      subject.build.should be_kind_of(Order)
+    it "delegates to the object creation strategy of the blueprint" do
+      blueprint.object_creation_strategy = :setter
+      SpinningJenny::ObjectCreation::Setter.should_receive(:build).with(Order, 'my_property' => :value)
+      subject.with(:my_property => :value).build
     end
 
-    it "calls the setters for the default values of the blueprint" do
-      blueprint.default_values['my_property'] = 'value'
-      subject.build.my_property.should == 'value'
-    end
-
-    it "calls the setters for the values of the data builder" do
-      builder = subject.with('my_property' => 'empty')
-      builder.build.my_property.should == 'empty'
+    it "delegates to the object creation strategy of the global configuration" do
+      SpinningJenny.configuration.object_creation_strategy = :setter
+      SpinningJenny::ObjectCreation::Setter.should_receive(:build).with(Order, 'my_property' => :value)
+      subject.with(:my_property => :value).build
     end
   end
 

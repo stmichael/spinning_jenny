@@ -4,6 +4,7 @@ module SpinningJenny
   class Blueprint
 
     attr_reader :default_values, :describing_class
+    attr_accessor :object_creation_strategy
 
     def initialize(describing_class)
       @default_values = PropertyHash.new

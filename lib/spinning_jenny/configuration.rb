@@ -3,9 +3,11 @@ require 'spinning_jenny/blueprint'
 module SpinningJenny
   class Configuration
     attr_reader :blueprints
+    attr_accessor :object_creation_strategy
 
     def initialize
       @blueprints = {}
+      @object_creation_strategy = :setter
     end
 
     def named_blueprint(name)

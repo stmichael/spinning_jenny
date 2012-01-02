@@ -6,7 +6,13 @@ describe SpinningJenny::Configuration do
     Order
   end
 
-  describe ".named_blueprint" do
+  describe "#initialize" do
+    it "sets the default object creation strategy to setter" do
+      subject.object_creation_strategy.should == :setter
+    end
+  end
+
+  describe "#named_blueprint" do
     let(:blueprint) { SpinningJenny::Blueprint.new sample_class }
 
     it "returns an existing blueprint" do
@@ -19,7 +25,7 @@ describe SpinningJenny::Configuration do
     end
   end
 
-  describe ".create_blueprint" do
+  describe "#create_blueprint" do
     it "creates a new blueprint if it doesn't exist" do
       blueprint = subject.send(:create_blueprint, 'order', sample_class)
       blueprint.should be_kind_of(SpinningJenny::Blueprint)
@@ -32,7 +38,7 @@ describe SpinningJenny::Configuration do
     end
   end
 
-  describe ".clear_blueprints" do
+  describe "#clear_blueprints" do
     it "removes all blueprints" do
       subject.blueprints['order'] = :my_blueprint
       subject.clear_blueprints
