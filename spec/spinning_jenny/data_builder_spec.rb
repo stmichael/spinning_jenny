@@ -28,4 +28,29 @@ describe SpinningJenny::DataBuilder do
       subject.build.my_property.should == 'value'
     end
   end
+
+  describe "#with" do
+    it "returns a new data builder with the same blueprint" do
+      builder = subject.with(:delivery => :express)
+      builder.blueprint.should == subject.blueprint
+      builder.should_not == subject
+    end
+
+    it "stores the value for the new object" do
+      builder = subject.with(:delivery => :express)
+      builder.object_values['delivery'].should == :express
+    end
+  end
+
+  describe "#object_values" do
+    it "contains the default values from the blueprint" do
+      blueprint.delivery :slow
+      subject.object_values['delivery'].should == :slow
+    end
+
+    it "contains values from the data builder" do
+      subject.values['delivery'] = :max
+      subject.object_values['delivery'].should == :max
+    end
+  end
 end
