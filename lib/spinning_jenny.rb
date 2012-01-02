@@ -18,10 +18,8 @@ module SpinningJenny
   end
 
   def self.builder_for(class_or_name)
-    name = case class_or_name
-           when Class then class_name_to_real_name(class_or_name.name)
-           else class_or_name
-           end
+    name = class_or_name
+    name = class_name_to_real_name(name) if name.kind_of?(Class)
 
     DataBuilder.new configuration.named_blueprint(name)
   end
