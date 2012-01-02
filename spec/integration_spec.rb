@@ -63,4 +63,17 @@ describe SpinningJenny do
     object.item.should be_kind_of(Item)
     object.item.name.should == 'item1'
   end
+
+  it "lets you define object dependencies on blueprint level" do
+    SpinningJenny.blueprint Item do |b|
+      b.name 'item1'
+    end
+    SpinningJenny.blueprint Order do |b|
+      b.item SpinningJenny.builder_for(Item)
+    end
+    builder = SpinningJenny.builder_for(Order)
+    object = builder.build
+    object.item.should be_kind_of(Item)
+    object.item.name.should == 'item1'
+  end
 end
