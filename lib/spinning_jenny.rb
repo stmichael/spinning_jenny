@@ -1,6 +1,7 @@
 require "spinning_jenny/version"
 require "spinning_jenny/blueprint"
 require "spinning_jenny/data_builder"
+require "spinning_jenny/configuration"
 
 module SpinningJenny
 
