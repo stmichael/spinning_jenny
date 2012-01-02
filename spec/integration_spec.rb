@@ -21,7 +21,7 @@ describe SpinningJenny do
     object.delivery.should == :express
   end
 
-  it "lets you define values at object creation time" do
+  it "lets you define values on data builder level" do
     SpinningJenny.blueprint Order do |b|
       b.delivery :express
     end
@@ -75,5 +75,14 @@ describe SpinningJenny do
     object = builder.build
     object.item.should be_kind_of(Item)
     object.item.name.should == 'item1'
+  end
+
+  it "lets you define object values evaluated at object creation" do
+    SpinningJenny.blueprint Order do |b|
+      b.delivery { 'delayed' }
+    end
+    object = SpinningJenny.builder_for(Order).build
+    object.should be_kind_of(Order)
+    object.delivery.should == 'delayed'
   end
 end

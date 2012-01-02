@@ -1,3 +1,5 @@
+require 'spinning_jenny/property_hash'
+
 module SpinningJenny
   class Blueprint
 
@@ -11,6 +13,8 @@ module SpinningJenny
     def method_missing(name, *args, &block)
       if args.count == 1
         default_values[name] = args.first
+      elsif args.count == 0 && block_given?
+        default_values[name] = block
       else
         super
       end

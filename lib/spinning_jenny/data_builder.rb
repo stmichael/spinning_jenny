@@ -39,6 +39,8 @@ module SpinningJenny
       merged_values.each do |key, value|
         if value.kind_of?(DataBuilder)
           merged_values[key] = value.build
+        elsif value.respond_to? :call
+          merged_values[key] = value.call
         end
       end
 

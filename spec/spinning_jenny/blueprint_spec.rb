@@ -16,5 +16,11 @@ describe SpinningJenny::Blueprint do
       subject.my_property :value
       subject.default_values['my_property'].should == :value
     end
+
+    it "sets a block as a default value" do
+      subject.my_property { :value }
+      subject.default_values['my_property'].should be_kind_of(Proc)
+      subject.default_values['my_property'].call.should == :value
+    end
   end
 end

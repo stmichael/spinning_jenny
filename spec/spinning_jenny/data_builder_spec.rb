@@ -82,5 +82,10 @@ describe SpinningJenny::DataBuilder do
       builder = subject.with('item' => item_builder)
       builder.object_values['item'].should be_kind_of(Item)
     end
+
+    it "executes blocks for object values" do
+      builder = subject.with('delivery' => Proc.new { :value })
+      builder.object_values['delivery'].should == :value
+    end
   end
 end
