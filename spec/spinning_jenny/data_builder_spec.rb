@@ -1,8 +1,11 @@
+require 'spinning_jenny'
 require 'spinning_jenny/data_builder'
 
 describe SpinningJenny::DataBuilder do
   class Order
     attr_accessor :my_property
+    def save
+    end
   end
   class Item
   end
@@ -14,20 +17,43 @@ describe SpinningJenny::DataBuilder do
       builder = SpinningJenny::DataBuilder.new(blueprint)
       builder.blueprint.should == blueprint
     end
-
   end
 
-  describe "#build" do
+  describe "#instantiate" do
     it "delegates to the object creation strategy of the blueprint" do
       blueprint.object_creation_strategy = :setter
-      SpinningJenny::ObjectCreation::Setter.should_receive(:build).with(Order, 'my_property' => :value)
-      subject.with(:my_property => :value).build
+      SpinningJenny::ObjectCreation::Setter.should_receive(:instantiate).with(Order, 'my_property' => :value)
+      subject.with(:my_property => :value).instantiate
     end
 
     it "delegates to the object creation strategy of the global configuration" do
       SpinningJenny.configuration.object_creation_strategy = :setter
-      SpinningJenny::ObjectCreation::Setter.should_receive(:build).with(Order, 'my_property' => :value)
-      subject.with(:my_property => :value).build
+      SpinningJenny::ObjectCreation::Setter.should_receive(:instantiate).with(Order, 'my_property' => :value)
+      subject.with(:my_property => :value).instantiate
+    end
+  end
+
+  describe "#build" do
+    let(:instance) { Order.new }
+
+    it "instantiates a new object" do
+      subject.stub(:instantiate) { instance }
+      subject.build.should == instance
+    end
+  end
+
+  describe "#create" do
+    let(:instance) { Order.new }
+
+    it "instantiates a new object" do
+      subject.stub(:instantiate) { instance }
+      subject.create.should == instance
+    end
+
+    it "saves the instance" do
+      instance.should_receive(:save)
+      subject.stub(:instantiate) { instance }
+      subject.create
     end
   end
 

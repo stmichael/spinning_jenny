@@ -116,4 +116,25 @@ describe SpinningJenny do
     object = SpinningJenny.a_hash_order.build
     object.values['delivery'].should == :now
   end
+
+  class PersistedOrder
+    attr_accessor :price
+    attr_reader :saved
+
+    def initialize
+      @saved = false
+    end
+
+    def save
+      @saved = true
+    end
+  end
+  it "instantiates and persists an object" do
+    SpinningJenny.blueprint PersistedOrder do |b|
+      b.price 28
+    end
+    object = SpinningJenny.a_persisted_order.create
+    object.saved.should be_true
+    object.price.should == 28
+  end
 end

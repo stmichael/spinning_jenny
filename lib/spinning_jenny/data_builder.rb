@@ -16,9 +16,19 @@ module SpinningJenny
       @properties_to_ignore = properties_to_ignore.dup
     end
 
-    def build
+    def instantiate
       strategy = blueprint.object_creation_strategy || SpinningJenny.configuration.object_creation_strategy
-      ObjectCreation.strategy(strategy).build(blueprint.describing_class, object_values)
+      ObjectCreation.strategy(strategy).instantiate(blueprint.describing_class, object_values)
+    end
+
+    def build
+      instantiate
+    end
+
+    def create
+      object = instantiate
+      object.save
+      object
     end
 
     def with(values)

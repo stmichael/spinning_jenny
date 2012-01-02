@@ -10,13 +10,13 @@ describe SpinningJenny::ObjectCreation::ValueHash do
   end
   subject { SpinningJenny::ObjectCreation::ValueHash }
 
-  describe ".build" do
+  describe ".instantiate" do
     it "creates an object of type described by the blueprint" do
-      subject.build(ValueHashOrder).should be_kind_of(ValueHashOrder)
+      subject.instantiate(ValueHashOrder).should be_kind_of(ValueHashOrder)
     end
 
     it "initializes the objects properties" do
-      object = subject.build(ValueHashOrder, 'my_property' => 'value')
+      object = subject.instantiate(ValueHashOrder, 'my_property' => 'value')
       object.values['my_property'].should == 'value'
     end
   end
