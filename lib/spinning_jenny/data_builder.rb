@@ -12,7 +12,7 @@ module SpinningJenny
 
     def build
       object = blueprint.describing_class.new
-      blueprint.default_values.each do |key, value|
+      object_values.each do |key, value|
         object.send("#{key}=", value)
       end
       object

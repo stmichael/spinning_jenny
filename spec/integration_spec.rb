@@ -8,6 +8,10 @@ describe SpinningJenny do
     Order
   end
 
+  before :each do
+    subject.configuration.clear_blueprints
+  end
+
   it "lets you define default values for blueprints" do
     SpinningJenny.blueprint sample_class do |b|
       b.delivery :express
@@ -18,9 +22,12 @@ describe SpinningJenny do
   end
 
   it "lets you define values at object creation time" do
+    SpinningJenny.blueprint sample_class do |b|
+      b.delivery :express
+    end
     builder = SpinningJenny.builder_for(sample_class).
-      with(:delivery => :express)
+      with(:delivery => :slow)
     object = builder.build
-    object.delivery.should == :express
+    object.delivery.should == :slow
   end
 end

@@ -27,6 +27,11 @@ describe SpinningJenny::DataBuilder do
       blueprint.default_values['my_property'] = 'value'
       subject.build.my_property.should == 'value'
     end
+
+    it "calls the setters for the values of the data builder" do
+      subject.values['my_property'] = 'empty'
+      subject.build.my_property.should == 'empty'
+    end
   end
 
   describe "#with" do
