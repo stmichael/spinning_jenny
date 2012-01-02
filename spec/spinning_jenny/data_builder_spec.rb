@@ -1,13 +1,12 @@
 require 'spinning_jenny/data_builder'
 
 describe SpinningJenny::DataBuilder do
-  let(:sample_class) do
-    class Order
-      attr_accessor :my_property
-    end
-    Order
+  class Order
+    attr_accessor :my_property
   end
-  let(:blueprint) { SpinningJenny::Blueprint.new sample_class }
+  class Item
+  end
+  let(:blueprint) { SpinningJenny::Blueprint.new Order }
   subject { SpinningJenny::DataBuilder.new(blueprint) }
 
   describe "#initialize" do
@@ -20,7 +19,7 @@ describe SpinningJenny::DataBuilder do
 
   describe "#build" do
     it "creates an object of type described by the blueprint" do
-      subject.build.should be_kind_of(sample_class)
+      subject.build.should be_kind_of(Order)
     end
 
     it "calls the setters for the default values of the blueprint" do
@@ -75,6 +74,13 @@ describe SpinningJenny::DataBuilder do
       builder = subject.with('delivery' => :max)
       builder = builder.without('delivery')
       builder.object_values.should_not include('delivery')
+    end
+
+    it "generates objects if a value is another data builder" do
+      item_blueprint = SpinningJenny::Blueprint.new Item
+      item_builder = SpinningJenny::DataBuilder.new item_blueprint
+      builder = subject.with('item' => item_builder)
+      builder.object_values['item'].should be_kind_of(Item)
     end
   end
 end

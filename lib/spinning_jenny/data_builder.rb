@@ -1,4 +1,5 @@
 require 'spinning_jenny/blueprint'
+require 'spinning_jenny/property_hash'
 
 module SpinningJenny
   class DataBuilder
@@ -8,17 +9,10 @@ module SpinningJenny
     def initialize(blueprint, values = {}, properties_to_ignore = [])
       @blueprint = blueprint
 
-      @values = {}
-      values.keys.each do |key|
-        @values[key.to_s] = values[key]
-      end
-      @values.freeze
+      @values = values
+      @values = PropertyHash.from_hash(@values) if @values.kind_of?(Hash)
 
-      @properties_to_ignore = []
-      properties_to_ignore.each do |property|
-        @properties_to_ignore << property.to_s
-      end
-      @properties_to_ignore.freeze
+      @properties_to_ignore = properties_to_ignore.dup
     end
 
     def build
@@ -30,7 +24,7 @@ module SpinningJenny
     end
 
     def with(values)
-      self.class.new blueprint, self.values.merge(values)
+      self.class.new blueprint, self.values.to_hash.merge(values)
     end
 
     def without(*properties)
@@ -38,11 +32,16 @@ module SpinningJenny
     end
 
     def object_values
-      merged_values = blueprint.default_values.merge(values)
-      merged_values.keys.each do |key|
-        merged_values[key.to_s] = merged_values.delete(key)
+      merged_values = blueprint.default_values.to_hash
+      merged_values.merge! values.to_hash
+      merged_values.reject! { |key, value| properties_to_ignore.include?(key.to_s) || properties_to_ignore.include?(key.to_sym) }
+
+      merged_values.each do |key, value|
+        if value.kind_of?(DataBuilder)
+          merged_values[key] = value.build
+        end
       end
-      merged_values.reject! { |key, value| properties_to_ignore.include? key }
+
       merged_values
     end
 
