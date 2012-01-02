@@ -12,7 +12,9 @@ module SpinningJenny
   def self.blueprint(sample_class, properties = {})
     name = properties[:name] || class_name_to_real_name(sample_class.name)
 
-    yield configuration.named_blueprint(name) || configuration.create_blueprint(name, sample_class)
+    blueprint = configuration.named_blueprint(name) || configuration.create_blueprint(name, sample_class)
+    yield blueprint
+    blueprint
   end
 
   def self.builder_for(class_or_name)
@@ -22,6 +24,14 @@ module SpinningJenny
            end
 
     DataBuilder.new configuration.named_blueprint(name)
+  end
+
+  def self.method_missing(name, *args, &block)
+    if match = name.to_s.match(/^(?:a|an)_(.*)$/)
+      builder_for(match[1]) || super
+    else
+      super
+    end
   end
 
   private

@@ -12,7 +12,7 @@ describe SpinningJenny do
     subject.configuration.clear_blueprints
   end
 
-  it "lets you define default values for blueprints" do
+  it "defines default values for blueprints" do
     SpinningJenny.blueprint Order do |b|
       b.delivery :express
     end
@@ -21,7 +21,7 @@ describe SpinningJenny do
     object.delivery.should == :express
   end
 
-  it "lets you define values on data builder level" do
+  it "defines values on data builder level" do
     SpinningJenny.blueprint Order do |b|
       b.delivery :express
     end
@@ -40,7 +40,7 @@ describe SpinningJenny do
     object.delivery.should == :special
   end
 
-  it "lets you ignore properties" do
+  it "ignores properties" do
     SpinningJenny.blueprint Order do |b|
       b.delivery :ignore
     end
@@ -50,7 +50,7 @@ describe SpinningJenny do
     object.delivery.should be_nil
   end
 
-  it "lets you define object dependencies on data builder level" do
+  it "defines object dependencies on data builder level" do
     SpinningJenny.blueprint Item do |b|
       b.name 'item1'
     end
@@ -64,7 +64,7 @@ describe SpinningJenny do
     object.item.name.should == 'item1'
   end
 
-  it "lets you define object dependencies on blueprint level" do
+  it "defines object dependencies on blueprint level" do
     SpinningJenny.blueprint Item do |b|
       b.name 'item1'
     end
@@ -77,12 +77,28 @@ describe SpinningJenny do
     object.item.name.should == 'item1'
   end
 
-  it "lets you define object values evaluated at object creation" do
+  it "defines object values evaluated at object creation" do
     SpinningJenny.blueprint Order do |b|
       b.delivery { 'delayed' }
     end
     object = SpinningJenny.builder_for(Order).build
     object.should be_kind_of(Order)
     object.delivery.should == 'delayed'
+  end
+
+  it "creates a data builder of a blueprint beginning with a consonant" do
+    blueprint = SpinningJenny.blueprint Order, :name => :special_order do |b|
+      b.delivery :special
+    end
+    builder = SpinningJenny.a_special_order
+    builder.blueprint.should == blueprint
+  end
+
+  it "creates a data builder of a blueprint beginning with a vowel" do
+    blueprint = SpinningJenny.blueprint Order do |b|
+      b.delivery :normal
+    end
+    builder = SpinningJenny.an_order
+    builder.blueprint.should == blueprint
   end
 end
