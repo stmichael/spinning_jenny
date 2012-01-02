@@ -30,4 +30,13 @@ describe SpinningJenny do
     object = builder.build
     object.delivery.should == :slow
   end
+
+  it "lets you name blueprints specifically" do
+    SpinningJenny.blueprint sample_class, :name => 'special_order' do |b|
+      b.delivery :special
+    end
+    object = SpinningJenny.builder_for('special_order').build
+    object.should be_kind_of(sample_class)
+    object.delivery.should == :special
+  end
 end

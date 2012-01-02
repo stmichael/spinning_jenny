@@ -35,6 +35,14 @@ describe SpinningJenny do
 
       subject.configuration.blueprints['order'].describing_class.should == sample_class
     end
+
+    it "accepts a name for the blueprint" do
+      subject.blueprint sample_class, :name => 'my_order' do |b|
+        b.describing_class.should == sample_class
+      end
+
+      subject.configuration.blueprints['my_order'].should_not be_nil
+    end
   end
 
   describe ".builder_for" do

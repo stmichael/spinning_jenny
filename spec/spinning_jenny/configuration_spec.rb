@@ -21,13 +21,13 @@ describe SpinningJenny::Configuration do
 
   describe ".create_blueprint" do
     it "creates a new blueprint if it doesn't exist" do
-      blueprint = subject.send(:create_blueprint, sample_class)
+      blueprint = subject.send(:create_blueprint, 'order', sample_class)
       blueprint.should be_kind_of(SpinningJenny::Blueprint)
       blueprint.describing_class.should == sample_class
     end
 
     it "caches the created blueprint" do
-      blueprint = subject.send(:create_blueprint, sample_class)
+      blueprint = subject.send(:create_blueprint, 'order', sample_class)
       subject.named_blueprint('order').should_not be_nil
     end
   end

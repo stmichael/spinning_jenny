@@ -9,14 +9,17 @@ module SpinningJenny
     @configuration ||= Configuration.new
   end
 
-  def self.blueprint(sample_class)
-    name = class_name_to_real_name(sample_class.name)
+  def self.blueprint(sample_class, properties = {})
+    name = properties[:name] || class_name_to_real_name(sample_class.name)
 
-    yield configuration.named_blueprint(name) || configuration.create_blueprint(sample_class)
+    yield configuration.named_blueprint(name) || configuration.create_blueprint(name, sample_class)
   end
 
-  def self.builder_for(sample_class)
-    name = class_name_to_real_name(sample_class.name)
+  def self.builder_for(class_or_name)
+    name = case class_or_name
+           when Class then class_name_to_real_name(class_or_name.name)
+           else class_or_name
+           end
 
     DataBuilder.new configuration.named_blueprint(name)
   end

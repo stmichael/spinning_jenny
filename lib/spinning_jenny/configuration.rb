@@ -12,24 +12,12 @@ module SpinningJenny
       blueprints[name]
     end
 
-    def create_blueprint(describing_class)
-      name = class_name_to_real_name(describing_class.name)
-
+    def create_blueprint(name, describing_class)
       blueprints[name] = SpinningJenny::Blueprint.new(describing_class)
     end
 
     def clear_blueprints
       blueprints.clear
-    end
-
-    def class_name_to_real_name(class_name)
-      name = class_name.to_s.dup
-      name.gsub!(/::/, '/')
-      name.gsub!(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
-      name.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
-      name.tr!("-", "_")
-      name.downcase!
-      name
     end
   end
 end
