@@ -39,4 +39,14 @@ describe SpinningJenny do
     object.should be_kind_of(sample_class)
     object.delivery.should == :special
   end
+
+  it "lets you ignore properties" do
+    SpinningJenny.blueprint sample_class do |b|
+      b.delivery :ignore
+    end
+    builder = SpinningJenny.builder_for(sample_class).
+      without(:delivery)
+    object = builder.build
+    object.delivery.should be_nil
+  end
 end

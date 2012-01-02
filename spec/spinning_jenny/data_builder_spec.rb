@@ -29,8 +29,8 @@ describe SpinningJenny::DataBuilder do
     end
 
     it "calls the setters for the values of the data builder" do
-      subject.values['my_property'] = 'empty'
-      subject.build.my_property.should == 'empty'
+      builder = subject.with('my_property' => 'empty')
+      builder.build.my_property.should == 'empty'
     end
   end
 
@@ -47,6 +47,19 @@ describe SpinningJenny::DataBuilder do
     end
   end
 
+  describe "#without" do
+    it "returns a new data builder with the same blueprint" do
+      builder = subject.with(:delivery => :express)
+      builder.blueprint.should == subject.blueprint
+      builder.should_not == subject
+    end
+
+    it "stores the property to ignore" do
+      builder = subject.without(:delivery)
+      builder.object_values['delivery'].should be_nil
+    end
+  end
+
   describe "#object_values" do
     it "contains the default values from the blueprint" do
       blueprint.delivery :slow
@@ -54,8 +67,14 @@ describe SpinningJenny::DataBuilder do
     end
 
     it "contains values from the data builder" do
-      subject.values['delivery'] = :max
-      subject.object_values['delivery'].should == :max
+      builder = subject.with('delivery' => :max)
+      builder.object_values['delivery'].should == :max
+    end
+
+    it "doesn't set properties on the ignore list" do
+      builder = subject.with('delivery' => :max)
+      builder = builder.without('delivery')
+      builder.object_values.should_not include('delivery')
     end
   end
 end
