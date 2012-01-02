@@ -7,6 +7,13 @@ describe SpinningJenny do
   class Item
     attr_accessor :name
   end
+  class HashOrder
+    attr_reader :values
+
+    def initialize(values)
+      @values = values
+    end
+  end
 
   before :each do
     subject.configuration.clear_blueprints
@@ -100,5 +107,13 @@ describe SpinningJenny do
     end
     builder = SpinningJenny.an_order
     builder.blueprint.should == blueprint
+  end
+
+  it "instantiates an object with the value hash strategy" do
+    SpinningJenny.blueprint HashOrder, :object_creation_strategy => :value_hash do |b|
+      b.delivery :now
+    end
+    object = SpinningJenny.a_hash_order.build
+    object.values['delivery'].should == :now
   end
 end

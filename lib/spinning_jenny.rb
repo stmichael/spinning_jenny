@@ -10,9 +10,9 @@ module SpinningJenny
   end
 
   def self.blueprint(sample_class, properties = {})
-    name = properties[:name] || class_name_to_real_name(sample_class.name)
+    name = properties.delete(:name) || class_name_to_real_name(sample_class.name)
 
-    blueprint = configuration.named_blueprint(name) || configuration.create_blueprint(name, sample_class)
+    blueprint = configuration.named_blueprint(name) || configuration.create_blueprint(name, sample_class, properties)
     yield blueprint
     blueprint
   end

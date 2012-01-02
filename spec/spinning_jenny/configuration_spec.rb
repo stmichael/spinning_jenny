@@ -36,6 +36,11 @@ describe SpinningJenny::Configuration do
       blueprint = subject.send(:create_blueprint, 'order', sample_class)
       subject.named_blueprint('order').should_not be_nil
     end
+
+    it "calls the setter methods of all additional properties" do
+      blueprint = subject.send(:create_blueprint, 'order', sample_class, :object_creation_strategy => :abc)
+      blueprint.object_creation_strategy.should == :abc
+    end
   end
 
   describe "#clear_blueprints" do

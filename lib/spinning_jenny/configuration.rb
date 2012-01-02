@@ -14,8 +14,12 @@ module SpinningJenny
       blueprints[name.to_s]
     end
 
-    def create_blueprint(name, describing_class)
-      blueprints[name.to_s] = SpinningJenny::Blueprint.new(describing_class)
+    def create_blueprint(name, describing_class, properties = {})
+      blueprint = SpinningJenny::Blueprint.new(describing_class)
+      properties.each do |key, value|
+        blueprint.send("#{key}=", value)
+      end
+      blueprints[name.to_s] = blueprint
     end
 
     def clear_blueprints
