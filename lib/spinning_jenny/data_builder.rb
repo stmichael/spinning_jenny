@@ -1,6 +1,5 @@
 require 'spinning_jenny/blueprint'
 require 'spinning_jenny/property_hash'
-require 'spinning_jenny/object_creation'
 
 module SpinningJenny
   class DataBuilder
@@ -17,8 +16,11 @@ module SpinningJenny
     end
 
     def instantiate
-      strategy = blueprint.object_creation_strategy || SpinningJenny.configuration.object_creation_strategy
-      ObjectCreation.strategy(strategy).instantiate(blueprint.describing_class, object_values)
+      object = blueprint.describing_class.new
+      object_values.each do |key, value|
+        object.send("#{key}=", value)
+      end
+      object
     end
 
     def build

@@ -20,16 +20,14 @@ describe SpinningJenny::DataBuilder do
   end
 
   describe "#instantiate" do
-    it "delegates to the object creation strategy of the blueprint" do
-      blueprint.object_creation_strategy = :setter
-      SpinningJenny::ObjectCreation::Setter.should_receive(:instantiate).with(Order, 'my_property' => :value)
-      subject.with(:my_property => :value).instantiate
+    it "creates an object of type described by the blueprint" do
+      subject.instantiate.should be_kind_of(Order)
     end
 
-    it "delegates to the object creation strategy of the global configuration" do
-      SpinningJenny.configuration.object_creation_strategy = :setter
-      SpinningJenny::ObjectCreation::Setter.should_receive(:instantiate).with(Order, 'my_property' => :value)
-      subject.with(:my_property => :value).instantiate
+    it "calls the setters for the values" do
+      blueprint.my_property 'value'
+      object = subject.instantiate
+      object.my_property.should == 'value'
     end
   end
 

@@ -6,12 +6,6 @@ describe SpinningJenny::Configuration do
     Order
   end
 
-  describe "#initialize" do
-    it "sets the default object creation strategy to setter" do
-      subject.object_creation_strategy.should == :setter
-    end
-  end
-
   describe "#named_blueprint" do
     let(:blueprint) { SpinningJenny::Blueprint.new sample_class }
 
@@ -35,11 +29,6 @@ describe SpinningJenny::Configuration do
     it "caches the created blueprint" do
       blueprint = subject.send(:create_blueprint, 'order', sample_class)
       subject.named_blueprint('order').should_not be_nil
-    end
-
-    it "calls the setter methods of all additional properties" do
-      blueprint = subject.send(:create_blueprint, 'order', sample_class, :object_creation_strategy => :abc)
-      blueprint.object_creation_strategy.should == :abc
     end
   end
 
