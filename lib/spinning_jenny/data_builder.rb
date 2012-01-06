@@ -17,7 +17,7 @@ module SpinningJenny
 
     def instantiate
       object = blueprint.describing_class.new
-      object_values.each do |key, value|
+      calculated_object_values.each do |key, value|
         object.send("#{key}=", value)
       end
       object
@@ -34,27 +34,28 @@ module SpinningJenny
     end
 
     def with(values)
-      self.class.new blueprint, self.values.to_hash.merge(values)
+      self.class.new blueprint, self.values.merge(values)
     end
 
     def without(*properties)
       self.class.new blueprint, values, (self.properties_to_ignore + properties)
     end
 
-    def object_values
-      merged_values = blueprint.default_values.to_hash
-      merged_values.merge! values.to_hash
-      merged_values.reject! { |key, value| properties_to_ignore.include?(key.to_s) || properties_to_ignore.include?(key.to_sym) }
+    def raw_object_values
+      merged_values = blueprint.default_values.merge(values)
+      merged_values.reject! properties_to_ignore
+      merged_values
+    end
 
-      merged_values.each do |key, value|
-        if value.kind_of?(DataBuilder)
-          merged_values[key] = value.build
+    def calculated_object_values
+      calculated_values = raw_object_values.to_hash
+      calculated_values.each do |key, value|
+        if value.kind_of? DataBuilder
+          calculated_values[key] = value.build
         elsif value.respond_to? :call
-          merged_values[key] = value.call
+          calculated_values[key] = value.call
         end
       end
-
-      merged_values
     end
 
   end

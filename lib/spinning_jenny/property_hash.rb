@@ -24,6 +24,20 @@ module SpinningJenny
       @internal_hash.include? key
     end
 
+    def merge(other_hash)
+      property_hash = other_hash
+      property_hash = PropertyHash.from_hash(property_hash) if property_hash.kind_of?(Hash)
+
+      PropertyHash.from_hash self.to_hash.merge(property_hash.to_hash)
+    end
+
+    def reject!(*keys)
+      if keys.size == 1 && keys.first.kind_of?(Array)
+        keys = keys.first
+      end
+      @internal_hash.reject! {|key, value| keys.include?(key) || keys.include?(key.to_sym)}
+    end
+
     def to_hash
       @internal_hash
     end

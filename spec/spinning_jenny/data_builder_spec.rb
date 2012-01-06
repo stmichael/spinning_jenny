@@ -64,7 +64,7 @@ describe SpinningJenny::DataBuilder do
 
     it "stores the value for the new object" do
       builder = subject.with(:delivery => :express)
-      builder.object_values['delivery'].should == :express
+      builder.raw_object_values['delivery'].should == :express
     end
   end
 
@@ -77,37 +77,42 @@ describe SpinningJenny::DataBuilder do
 
     it "stores the property to ignore" do
       builder = subject.without(:delivery)
-      builder.object_values['delivery'].should be_nil
+      builder.raw_object_values['delivery'].should be_nil
     end
   end
 
-  describe "#object_values" do
+  describe "#raw_object_values" do
     it "contains the default values from the blueprint" do
       blueprint.delivery :slow
-      subject.object_values['delivery'].should == :slow
+      subject.raw_object_values['delivery'].should == :slow
     end
 
     it "contains values from the data builder" do
       builder = subject.with('delivery' => :max)
-      builder.object_values['delivery'].should == :max
+      builder.raw_object_values['delivery'].should == :max
     end
 
     it "doesn't set properties on the ignore list" do
       builder = subject.with('delivery' => :max)
       builder = builder.without('delivery')
-      builder.object_values.should_not include('delivery')
+      builder.raw_object_values.should_not include('delivery')
     end
+  end
+
+  describe "#calculated_object_values" do
+    let(:item_blueprint) { SpinningJenny::Blueprint.new Item }
+    let(:item_builder) { SpinningJenny::DataBuilder.new item_blueprint }
 
     it "generates objects if a value is another data builder" do
-      item_blueprint = SpinningJenny::Blueprint.new Item
-      item_builder = SpinningJenny::DataBuilder.new item_blueprint
-      builder = subject.with('item' => item_builder)
-      builder.object_values['item'].should be_kind_of(Item)
+      property_hash = SpinningJenny::PropertyHash.from_hash(:item => item_builder)
+      subject.stub(:raw_object_values) { property_hash }
+      subject.calculated_object_values['item'].should be_kind_of(Item)
     end
 
     it "executes blocks for object values" do
-      builder = subject.with('delivery' => Proc.new { :value })
-      builder.object_values['delivery'].should == :value
+      property_hash = SpinningJenny::PropertyHash.from_hash(:delivery => Proc.new { :value })
+      subject.stub(:raw_object_values) { property_hash }
+      subject.calculated_object_values['delivery'].should == :value
     end
   end
 end
