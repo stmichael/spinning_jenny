@@ -16,20 +16,6 @@ module SpinningJenny
       @properties_to_ignore = properties_to_ignore.dup
     end
 
-    def instantiate
-      object = blueprint.describing_class.new
-      calculated_object_values.each do |key, value|
-        object.send("#{key}=", value)
-      end
-      object
-    end
-
-    def create
-      object = instantiate
-      object.save
-      object
-    end
-
     def with(values)
       self.class.new blueprint, self.values.merge(values)
     end

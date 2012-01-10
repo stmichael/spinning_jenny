@@ -19,33 +19,6 @@ describe SpinningJenny::DataBuilder do
     end
   end
 
-  describe "#instantiate" do
-    it "creates an object of type described by the blueprint" do
-      subject.instantiate.should be_kind_of(Order)
-    end
-
-    it "calls the setters for the values" do
-      blueprint.my_property 'value'
-      object = subject.instantiate
-      object.my_property.should == 'value'
-    end
-  end
-
-  describe "#create" do
-    let(:instance) { Order.new }
-
-    it "instantiates a new object" do
-      subject.stub(:instantiate) { instance }
-      subject.create.should == instance
-    end
-
-    it "saves the instance" do
-      instance.should_receive(:save)
-      subject.stub(:instantiate) { instance }
-      subject.create
-    end
-  end
-
   describe "#with" do
     it "returns a new data builder with the same blueprint" do
       builder = subject.with(:delivery => :express)

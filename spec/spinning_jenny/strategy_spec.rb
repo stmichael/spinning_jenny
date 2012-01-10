@@ -8,6 +8,10 @@ describe SpinningJenny::Strategy do
       subject.by_name(:build).should be_kind_of(SpinningJenny::Strategy::Build)
     end
 
+    it "returns an instance of the create strategy" do
+      subject.by_name(:create).should be_kind_of(SpinningJenny::Strategy::Create)
+    end
+
     it "raises an error if no strategy has been found" do
       lambda { subject.by_name(:abc) }.should raise_error
     end
