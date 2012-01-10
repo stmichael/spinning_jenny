@@ -40,7 +40,7 @@ module SpinningJenny
 
   def self.class_name_to_real_name(class_name)
     name = class_name.to_s.dup
-    name.gsub!(/::/, '/')
+    name.gsub!(/::/, '_')
     name.gsub!(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
     name.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
     name.tr!("-", "_")

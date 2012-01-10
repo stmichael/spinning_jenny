@@ -86,5 +86,9 @@ describe SpinningJenny do
     it "returns camelcased class name replaced by underscores" do
       subject.class_name_to_real_name('MyOrder').should == 'my_order'
     end
+
+    it "returns the name of a class inside a module replaced by underscores" do
+      subject.class_name_to_real_name('Special::Order').should == 'special_order'
+    end
   end
 end
