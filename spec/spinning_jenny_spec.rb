@@ -43,15 +43,38 @@ describe SpinningJenny do
 
       subject.configuration.blueprints['my_order'].should_not be_nil
     end
+
+    it "accepts a string as class" do
+      subject.blueprint 'Order' do |b|
+        b.describing_class.should == sample_class
+      end
+    end
+
+    it "accepts a symbol as class" do
+      subject.blueprint :Order do |b|
+        b.describing_class.should == sample_class
+      end
+    end
   end
 
   describe ".builder_for" do
     subject { SpinningJenny }
     let(:blueprint) { SpinningJenny::Blueprint.new sample_class }
 
-    it "returns a data builder for the registered blueprint" do
+    before :each do
       subject.configuration.blueprints['order'] = blueprint
+    end
+
+    it "returns a data builder for the registered blueprint" do
       subject.builder_for(sample_class).blueprint.should == blueprint
+    end
+
+    it "accepts a string for the builder name" do
+      subject.builder_for('order').blueprint.should == blueprint
+    end
+
+    it "accepts a symbol for the builder name" do
+      subject.builder_for(:order).blueprint.should == blueprint
     end
   end
 

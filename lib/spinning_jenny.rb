@@ -9,7 +9,11 @@ module SpinningJenny
     @configuration ||= Configuration.new
   end
 
-  def self.blueprint(sample_class, properties = {})
+  def self.blueprint(class_or_name, properties = {})
+    sample_class = case class_or_name
+                   when String, Symbol then Object.const_get(class_or_name.to_s)
+                   else class_or_name
+                   end
     name = properties.delete(:name) || class_name_to_real_name(sample_class.name)
 
     blueprint = configuration.named_blueprint(name) || configuration.create_blueprint(name, sample_class)

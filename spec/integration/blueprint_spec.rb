@@ -52,4 +52,21 @@ describe SpinningJenny do
     object.delivery.should == 'delayed'
   end
 
+  it "accepts a string for the class" do
+    SpinningJenny.blueprint 'Order' do |b|
+      b.delivery :express
+    end
+    object = SpinningJenny.builder_for('order').build
+    object.should be_kind_of(Order)
+    object.delivery.should == :express
+  end
+
+  it "accepts a symbol for the class" do
+    SpinningJenny.blueprint :Order do |b|
+      b.delivery :express
+    end
+    object = SpinningJenny.builder_for(:order).build
+    object.should be_kind_of(Order)
+    object.delivery.should == :express
+  end
 end
