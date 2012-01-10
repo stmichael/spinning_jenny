@@ -26,7 +26,7 @@ module SpinningJenny
 
     def execute_with_strategy(name)
       strategy = Strategy.by_name(name)
-      strategy.execute blueprint.describing_class, calculated_object_values
+      strategy.execute blueprint.describing_class, calculated_object_values(name)
     end
 
     def raw_object_values
@@ -35,11 +35,11 @@ module SpinningJenny
       merged_values
     end
 
-    def calculated_object_values
+    def calculated_object_values(strategy)
       calculated_values = raw_object_values.to_hash
       calculated_values.each do |key, value|
         if value.kind_of? DataBuilder
-          calculated_values[key] = value.build
+          calculated_values[key] = value.send(strategy)
         elsif value.respond_to? :call
           calculated_values[key] = value.call
         end

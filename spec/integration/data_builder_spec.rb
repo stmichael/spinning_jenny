@@ -57,6 +57,7 @@ describe SpinningJenny do
 
   class PersistedOrder
     attr_accessor :price
+    attr_accessor :item
     attr_reader :saved
 
     def initialize
@@ -74,5 +75,28 @@ describe SpinningJenny do
     object = SpinningJenny.a_persisted_order.create
     object.saved.should be_true
     object.price.should == 28
+  end
+
+  class PersistedItem
+    attr_reader :saved
+
+    def initialize
+      @saved = false
+    end
+
+    def save
+      @saved = true
+    end
+  end
+  it "instantiates and persists item and order" do
+    SpinningJenny.blueprint PersistedItem do |b|
+    end
+    SpinningJenny.blueprint PersistedOrder do |b|
+      b.item SpinningJenny.builder_for(PersistedItem)
+    end
+    object = SpinningJenny.a_persisted_order.create
+    object.saved.should be_true
+    object.item.should be_kind_of(PersistedItem)
+    object.item.saved.should be_true
   end
 end

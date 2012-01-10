@@ -85,17 +85,20 @@ describe SpinningJenny::DataBuilder do
   describe "#calculated_object_values" do
     let(:item_blueprint) { SpinningJenny::Blueprint.new Item }
     let(:item_builder) { SpinningJenny::DataBuilder.new item_blueprint }
+    let(:item) { Item.new }
 
     it "generates objects if a value is another data builder" do
       property_hash = SpinningJenny::PropertyHash.from_hash(:item => item_builder)
+      item_builder.stub(:create) { item }
+      item_builder.should_receive(:create)
       subject.stub(:raw_object_values) { property_hash }
-      subject.calculated_object_values['item'].should be_kind_of(Item)
+      subject.calculated_object_values(:create)['item'].should be_kind_of(Item)
     end
 
     it "executes blocks for object values" do
       property_hash = SpinningJenny::PropertyHash.from_hash(:delivery => Proc.new { :value })
       subject.stub(:raw_object_values) { property_hash }
-      subject.calculated_object_values['delivery'].should == :value
+      subject.calculated_object_values(:build)['delivery'].should == :value
     end
   end
 
