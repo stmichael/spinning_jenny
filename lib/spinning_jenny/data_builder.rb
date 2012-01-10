@@ -1,5 +1,6 @@
 require 'spinning_jenny/blueprint'
 require 'spinning_jenny/property_hash'
+require 'spinning_jenny/strategy'
 
 module SpinningJenny
   class DataBuilder
@@ -23,10 +24,6 @@ module SpinningJenny
       object
     end
 
-    def build
-      instantiate
-    end
-
     def create
       object = instantiate
       object.save
@@ -39,6 +36,11 @@ module SpinningJenny
 
     def without(*properties)
       self.class.new blueprint, values, (self.properties_to_ignore + properties)
+    end
+
+    def execute_with_strategy(name)
+      strategy = Strategy.by_name(name)
+      strategy.execute blueprint.describing_class, calculated_object_values
     end
 
     def raw_object_values
@@ -55,6 +57,14 @@ module SpinningJenny
         elsif value.respond_to? :call
           calculated_values[key] = value.call
         end
+      end
+    end
+
+    def method_missing(name, *args, &block)
+      if SpinningJenny::Strategy.exists? name
+        execute_with_strategy name
+      else
+        super
       end
     end
 

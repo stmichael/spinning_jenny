@@ -31,15 +31,6 @@ describe SpinningJenny::DataBuilder do
     end
   end
 
-  describe "#build" do
-    let(:instance) { Order.new }
-
-    it "instantiates a new object" do
-      subject.stub(:instantiate) { instance }
-      subject.build.should == instance
-    end
-  end
-
   describe "#create" do
     let(:instance) { Order.new }
 
@@ -81,6 +72,25 @@ describe SpinningJenny::DataBuilder do
     end
   end
 
+  describe "#execute_with_strategy" do
+    class DummyStrategy
+      def execute(class_to_instantiate, properties = {})
+      end
+    end
+
+    it "finds the strategy" do
+      SpinningJenny::Strategy.stub(:by_name) { DummyStrategy.new }
+      SpinningJenny::Strategy.should_receive(:by_name).with('abc')
+      subject.execute_with_strategy('abc')
+    end
+
+    it "executes the strategy" do
+      SpinningJenny::Strategy.stub(:by_name) { DummyStrategy.new }
+      DummyStrategy.any_instance.should_receive(:execute).with(blueprint.describing_class, {})
+      subject.execute_with_strategy('abc')
+    end
+  end
+
   describe "#raw_object_values" do
     it "contains the default values from the blueprint" do
       blueprint.delivery :slow
@@ -113,6 +123,20 @@ describe SpinningJenny::DataBuilder do
       property_hash = SpinningJenny::PropertyHash.from_hash(:delivery => Proc.new { :value })
       subject.stub(:raw_object_values) { property_hash }
       subject.calculated_object_values['delivery'].should == :value
+    end
+  end
+
+  describe "#method_missing" do
+    it "looks for a strategy with the method name" do
+      SpinningJenny::Strategy.stub(:exists?) { true }
+      SpinningJenny::Strategy.should_receive(:exists?).with(:build)
+      subject.build
+    end
+
+    it "calls #execute_with_strategy" do
+      SpinningJenny::Strategy.stub(:exists?) { true }
+      subject.should_receive(:execute_with_strategy).with(:build)
+      subject.build
     end
   end
 end
