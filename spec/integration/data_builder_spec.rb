@@ -1,6 +1,13 @@
 require 'spinning_jenny'
 
 describe SpinningJenny do
+  class Order
+    attr_accessor :delivery, :item
+  end
+  class Item
+    attr_accessor :name
+  end
+
   before :each do
     subject.configuration.clear_blueprints
   end
@@ -98,5 +105,19 @@ describe SpinningJenny do
     object.saved.should be_true
     object.item.should be_kind_of(PersistedItem)
     object.item.saved.should be_true
+  end
+
+  class StubbedOrder
+    attr_writer :delivery
+    def delivery
+      "delivery: #{@delivery}"
+    end
+  end
+  it "instantiates an object and stubs its properties" do
+    SpinningJenny.blueprint StubbedOrder do |b|
+      b.delivery :speed
+    end
+    object = SpinningJenny.a_stubbed_order.build_stubbed
+    object.delivery.should == :speed
   end
 end
