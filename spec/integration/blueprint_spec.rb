@@ -53,7 +53,7 @@ describe SpinningJenny do
   end
 
   it "accepts a string for the class" do
-    SpinningJenny.blueprint 'Order' do |b|
+    SpinningJenny.blueprint 'order' do |b|
       b.delivery :express
     end
     object = SpinningJenny.builder_for('order').build
@@ -62,7 +62,7 @@ describe SpinningJenny do
   end
 
   it "accepts a symbol for the class" do
-    SpinningJenny.blueprint :Order do |b|
+    SpinningJenny.blueprint :order do |b|
       b.delivery :express
     end
     object = SpinningJenny.builder_for(:order).build

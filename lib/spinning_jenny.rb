@@ -11,13 +11,13 @@ module SpinningJenny
 
   def self.blueprint(class_or_name, properties = {})
     sample_class = case class_or_name
-                   when String, Symbol then Object.const_get(class_or_name.to_s)
+                   when String, Symbol then Object.const_get(real_name_to_class_name(class_or_name))
                    else class_or_name
                    end
     name = properties.delete(:name) || class_name_to_real_name(sample_class.name)
 
     blueprint = configuration.named_blueprint(name) || configuration.create_blueprint(name, sample_class)
-    yield blueprint
+    yield blueprint if block_given?
     blueprint
   end
 
@@ -46,6 +46,12 @@ module SpinningJenny
     name.tr!("-", "_")
     name.downcase!
     name
+  end
+
+  def self.real_name_to_class_name(real_name)
+    string = real_name.to_s
+    string = string.sub(/^[a-z\d]*/) { $&.capitalize }
+    string.gsub(/(?:_|(\/))([a-z\d]*)/i) { "#{$1}#{$2.capitalize}" }.gsub('/', '::')
   end
 
 end

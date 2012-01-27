@@ -45,13 +45,13 @@ describe SpinningJenny do
     end
 
     it "accepts a string as class" do
-      subject.blueprint 'Order' do |b|
+      subject.blueprint 'order' do |b|
         b.describing_class.should == sample_class
       end
     end
 
     it "accepts a symbol as class" do
-      subject.blueprint :Order do |b|
+      subject.blueprint :order do |b|
         b.describing_class.should == sample_class
       end
     end
