@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Michael Stämpfli"]
   s.email       = ["michael.staempfli@garaio.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{spinning_jenny provides a framework to create test data.}
+  s.description = %q{spinning_jenny is an implementation of the data builder pattern which can be used to easily create test data.}
 
   s.rubyforge_project = "spinning_jenny"
 
